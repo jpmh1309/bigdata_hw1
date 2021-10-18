@@ -1,1 +1,0 @@
-spark-submit programaestudiante.py -f datos/caja_45.json
