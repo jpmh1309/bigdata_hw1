@@ -1,34 +1,37 @@
 import argparse
-import pytest
 from pyspark.sql import SparkSession
 
 def spark_session():
-    """A fixture to create a Spark Context to reuse across tests."""
-    s = SparkSession.builder.appName('pytest-local-spark').master('local') \
-        .getOrCreate()
-
-    yield s
-
-    s.stop()
-    return s
+    spark = SparkSession.builder.appName("Bigdata: Tarea 2").getOrCreate()
+    return spark
 
 def get_parser():
-    parser = argparse.ArgumentParser('Tarea1')
-    parser.add_argument('--curso', '-c', type=str, help='Cursos .csv', required=True)
-    parser.add_argument('--estudiante', '-e', type=str, help='Estudiantes .csv', required=True)
-    parser.add_argument('--nota', '-n', type=str, help='Notas .csv', required=True)
+    parser = argparse.ArgumentParser('Tarea2')
+    parser.add_argument('--folder', '-f', type=str, help='Folder que contiene todos los archivos *.json ', required=True)
     return parser
+
+def total_productos():
+    print("Generate file 'total_productos.csv'")
+
+def total_cajas():
+    print("Generate file 'total_cajas.csv'")
+
+def metricas():
+    print("Generate file 'metricas.csv'")
 
 def main(args=None):
     parser = get_parser()
     args = parser.parse_args(args)
-    print(args.curso)
-    print(args.estudiante)
-    print(args.nota)
-    s = spark_session()
+    print(args.folder)
 
-    curso_df = s.read(args.curso).format("csv").option("header", "false")
-    curso_df.printSchema()
+    # schema = ['numero_caja','compras']
+
+    spark = spark_session()
+
+    df = spark.read.option("multiline","true").json(args.folder)
+    df.printSchema()
+    df.show()
+
 
 if __name__ == '__main__':
     main()
